@@ -1,0 +1,610 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>for LinhLinh</title>
+    <style>
+        @import url('https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&display=swap');
+        
+        body {
+            font-family: 'Poppins', sans-serif;
+            margin: 0;
+            padding: 0;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            min-height: 100vh;
+            background: linear-gradient(135deg, #fce7f3 0%, #d6eaff 100%);
+            overflow: hidden;
+        }
+        
+        .container {
+            position: relative;
+            width: 90%;
+            max-width: 900px;
+            height: 600px;
+            background: rgba(255, 255, 255, 0.95);
+            border-radius: 30px;
+            box-shadow: 0 20px 50px rgba(0, 0, 0, 0.1);
+            overflow: hidden;
+            backdrop-filter: blur(10px);
+        }
+        
+        .container > div {
+            display: none; /* Ẩn tất cả các section ban đầu */
+        }
+        
+        #passwordScreen {
+            display: flex; /* Hiển thị màn hình mật mã ban đầu */
+        }
+        
+        /* Password screen */
+        .password-screen {
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+            height: 100%;
+            text-align: center;
+            padding: 20px;
+        }
+        
+        .password-title {
+            font-size: 2rem;
+            color: #2c3e50;
+            margin-bottom: 25px;
+            font-weight: 600;
+        }
+        
+        .password-input {
+            width: 80%;
+            max-width: 350px;
+            height: 50px;
+            border-radius: 25px;
+            border: 2px solid #dfe6e9;
+            margin-bottom: 20px;
+            padding: 0 20px;
+            font-size: 1.2rem;
+            text-align: center;
+            transition: all 0.3s ease;
+        }
+        
+        .password-input:focus {
+            outline: none;
+            border-color: #a29bfe;
+            box-shadow: 0 0 15px rgba(162, 155, 254, 0.3);
+        }
+        
+        .submit-btn {
+            background: linear-gradient(135deg, #74b9ff, #a29bfe);
+            color: white;
+            border: none;
+            padding: 15px 40px;
+            border-radius: 50px;
+            font-size: 1.2rem;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            box-shadow: 0 5px 15px rgba(0, 0, 0, 0.1);
+        }
+        
+        .submit-btn:hover {
+            transform: scale(1.05);
+            box-shadow: 0 10px 25px rgba(0, 0, 0, 0.15);
+        }
+        
+        /* Quiz Screen Styles */
+        .slide {
+            position: absolute;
+            width: 100%;
+            height: 100%;
+            display: none;
+            flex-direction: column;
+            justify-content: space-between;
+            padding: 40px;
+            box-sizing: border-box;
+            text-align: center;
+            opacity: 0;
+            transition: opacity 0.7s ease, transform 0.5s ease;
+            transform: translateY(20px);
+        }
+        
+        .slide.active {
+            display: flex;
+            opacity: 1;
+            transform: translateY(0);
+        }
+        
+        .slide-content {
+            flex-grow: 1;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+        }
+        
+        .slide-image {
+            width: 300px;
+            height: 300px;
+            background-color: #f8f9fa;
+            border-radius: 20px;
+            margin-bottom: 30px;
+            overflow: hidden;
+            box-shadow: 0 10px 25px rgba(0, 0, 0, 0.1);
+            transition: transform 0.3s ease;
+        }
+        
+        .slide-image:hover {
+            transform: scale(1.05);
+        }
+        
+        .slide-image img {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+        }
+        
+        .slide-text {
+            font-size: 1.4rem;
+            color: #2c3e50;
+            margin-bottom: 30px;
+            line-height: 1.8;
+            max-width: 700px;
+            font-weight: 300;
+        }
+        
+        .buttons {
+            display: flex;
+            justify-content: center;
+            gap: 25px;
+            margin-top: 20px;
+        }
+        
+        .btn {
+            padding: 15px 40px;
+            border: none;
+            border-radius: 50px;
+            font-size: 1.1rem;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            box-shadow: 0 5px 15px rgba(0, 0, 0, 0.1);
+            background: linear-gradient(135deg, #ff6b81, #ff8b94);
+            color: white;
+        }
+        
+        .btn-yes {
+            background: linear-gradient(135deg, #6ab04c, #badc58);
+        }
+        
+        .btn-no {
+            background: linear-gradient(135deg, #e74c3c, #ff7675);
+        }
+        
+        .btn:hover {
+            transform: scale(1.1);
+            box-shadow: 0 10px 25px rgba(0, 0, 0, 0.15);
+        }
+        
+        .progress-bar {
+            width: 80%;
+            height: 8px;
+            background-color: rgba(0, 0, 0, 0.05);
+            border-radius: 10px;
+            overflow: hidden;
+            margin: 0 auto 20px;
+        }
+        
+        .progress {
+            height: 100%;
+            background: linear-gradient(90deg, #74b9ff, #a29bfe);
+            width: 0%;
+            transition: width 0.5s ease;
+            border-radius: 10px;
+        }
+        
+        .result-container {
+            display: none;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+            text-align: center;
+            padding: 40px;
+            height: 100%;
+        }
+        
+        .result-title {
+            font-size: 2.5rem;
+            color: #2c3e50;
+            margin-bottom: 25px;
+            font-weight: 600;
+        }
+        
+        .result-message {
+            font-size: 1.3rem;
+            color: #57606f;
+            margin-bottom: 40px;
+            line-height: 1.7;
+            max-width: 600px;
+        }
+        
+        .restart-btn {
+            background: linear-gradient(135deg, #74b9ff, #a29bfe);
+            color: white;
+            border: none;
+            padding: 15px 40px;
+            border-radius: 50px;
+            font-size: 1.2rem;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            box-shadow: 0 5px 15px rgba(0, 0, 0, 0.1);
+        }
+        
+        .restart-btn:hover {
+            transform: scale(1.1);
+            box-shadow: 0 10px 25px rgba(0, 0, 0, 0.15);
+        }
+        
+        /* Letter Screen Styles */
+        .letter-container {
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+            height: 100%;
+            text-align: center;
+            padding: 40px;
+            box-sizing: border-box;
+            overflow-y: auto;
+        }
+        
+        .letter-title {
+            font-size: 2.5rem;
+            color: #2c3e50;
+            margin-bottom: 30px;
+            font-weight: 600;
+        }
+        
+        .letter-content {
+            font-size: 1.3rem;
+            color: #57606f;
+            line-height: 1.8;
+            text-align: left;
+            max-width: 700px;
+            margin-bottom: 30px;
+        }
+        
+        .letter-signature {
+            font-size: 1.5rem;
+            color: #2c3e50;
+            font-weight: 500;
+            font-style: italic;
+            align-self: flex-end;
+            margin-right: 50px;
+        }
+        
+        /* Thoughts Screen Styles */
+        .thoughts-container {
+            flex-direction: column;
+            height: 100%;
+            padding: 30px;
+            box-sizing: border-box;
+            overflow-y: auto;
+        }
+        
+        .thoughts-title {
+            font-size: 2.2rem;
+            color: #2c3e50;
+            margin-bottom: 25px;
+            text-align: center;
+            font-weight: 600;
+        }
+        
+        .thoughts-list {
+            list-style-type: none;
+            padding: 0;
+        }
+        
+        .thought-item {
+            background: rgba(255, 255, 255, 0.8);
+            border-radius: 15px;
+            padding: 20px;
+            margin-bottom: 20px;
+            box-shadow: 0 5px 15px rgba(0, 0, 0, 0.05);
+            transition: transform 0.3s ease;
+        }
+        
+        .thought-item:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 10px 25px rgba(0, 0, 0, 0.1);
+        }
+        
+        .thought-title {
+            font-size: 1.4rem;
+            color: #2c3e50;
+            margin-bottom: 10px;
+            font-weight: 500;
+        }
+        
+        .thought-text {
+            font-size: 1.1rem;
+            color: #57606f;
+            line-height: 1.7;
+        }
+        
+        .return-btn {
+            align-self: center;
+            background: linear-gradient(135deg, #74b9ff, #a29bfe);
+            color: white;
+            border: none;
+            padding: 12px 30px;
+            border-radius: 50px;
+            font-size: 1.1rem;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            box-shadow: 0 5px 15px rgba(0, 0, 0, 0.1);
+            margin-top: 20px;
+        }
+        
+        .return-btn:hover {
+            transform: scale(1.05);
+            box-shadow: 0 10px 25px rgba(0, 0, 0, 0.15);
+        }
+        
+        /* Heart Animation */
+        .heart-animation {
+            position: fixed;
+            width: 100%;
+            height: 100%;
+            top: 0;
+            left: 0;
+            pointer-events: none;
+            z-index: 1000;
+            display: none;
+        }
+        
+        .heart {
+            position: absolute;
+            width: 25px;
+            height: 25px;
+            background-color: #ff6b81;
+            transform: rotate(45deg) scale(0);
+            animation: heart-fly 3s ease-in-out forwards;
+        }
+        
+        .heart:before, .heart:after {
+            content: '';
+            width: 25px;
+            height: 25px;
+            background-color: #ff6b81;
+            border-radius: 50%;
+            position: absolute;
+        }
+        
+        .heart:before {
+            top: -12px;
+            left: 0;
+        }
+        
+        .heart:after {
+            top: 0;
+            left: -12px;
+        }
+        
+        @keyframes heart-fly {
+            0% { transform: rotate(45deg) scale(0); opacity: 0; }
+            20% { transform: rotate(45deg) scale(1.2); opacity: 1; }
+            100% { transform: rotate(45deg) scale(0) translate(var(--translate-x), var(--translate-y)); opacity: 0; }
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <!-- Password Screen -->
+        <div class="password-screen" id="passwordScreen">
+            <h1 class="password-title">Nhập mật mã</h1>
+            <input type="password" class="password-input" id="passwordInput" placeholder="Nhập mật mã của bạn" autocomplete="off">
+            <button class="submit-btn" onclick="checkPassword()">Xác nhận</button>
+        </div>
+        
+        <!-- Quiz Section -->
+        <div id="quizContainer">
+            <div class="slide active" id="slide1">
+                <div class="slide-content">
+                    <div class="slide-image">
+                        <img src="/api/placeholder/400/320" alt="Khoảnh khắc đầu tiên">
+                    </div>
+                    <div class="slide-text">
+                        Em còn nhớ ngày đầu tiên chúng ta gặp nhau không? Bầu trời hôm đó thật đẹp, giống như ánh mắt em vậy.
+                    </div>
+                </div>
+                <div class="buttons">
+                    <button class="btn btn-yes" onclick="answerQuestion(true)">Có</button>
+                    <button class="btn btn-no" onclick="answerQuestion(false)">Không</button>
+                </div>
+                <div class="progress-bar">
+                    <div class="progress" id="progress1"></div>
+                </div>
+            </div>
+            <div class="slide" id="slide2">
+                <div class="slide-content">
+                    <div class="slide-image">
+                        <img src="/api/placeholder/400/320" alt="Buổi hẹn đầu tiên">
+                    </div>
+                    <div class="slide-text">
+                        Buổi hẹn đầu tiên ở quán cà phê ấy, anh đã lo lắng đến mức làm đổ cà phê lên quần. Em còn cười vì điều đó không?
+                    </div>
+                </div>
+                <div class="buttons">
+                    <button class="btn btn-yes" onclick="answerQuestion(true)">Có</button>
+                    <button class="btn btn-no" onclick="answerQuestion(false)">Không</button>
+                </div>
+                <div class="progress-bar">
+                    <div class="progress" id="progress2"></div>
+                </div>
+            </div>
+            <!-- Thêm các slide khác nếu muốn -->
+            <div class="result-container" id="resultContainer">
+                <div class="result-title" id="resultTitle"></div>
+                <div class="result-message" id="resultMessage"></div>
+                <button class="restart-btn" onclick="restartSlides()">Bắt đầu lại</button>
+                <button class="return-btn" onclick="returnToPassword()">Quay lại mật mã</button>
+            </div>
+        </div>
+        
+        <!-- Letter Section -->
+        <div class="letter-container" id="letterContainer">
+            <h1 class="letter-title">Gửi LinhLinh...</h1>
+            <div class="letter-content">
+                Em yêu,<br><br>
+                Đã bao nhiêu ngày trôi qua kể từ khi chúng ta không còn bên nhau, nhưng trong tim anh, khoảng thời gian ấy dường như vẫn mãi đứng yên.<br><br>
+                Mỗi ngày trôi qua, anh đều nhớ về nụ cười của em, ánh mắt của em, và cảm giác ấm áp khi được nắm tay em.<br><br>
+                Anh biết chúng ta đã có những khó khăn, và anh đã không đủ trưởng thành để vượt qua chúng. Nhưng giờ đây, sau tất cả, anh đã học được rất nhiều.<br><br>
+                Anh không biết em có còn nghĩ về anh không, hay em đã tìm được người mới để yêu thương. Dù là thế nào, anh cũng chỉ mong em hạnh phúc.<br><br>
+                Anh hứa sẽ làm tốt hơn, yêu em nhiều hơn, và trân trọng từng khoảnh khắc bên em.<br><br>
+                Dù em có quyết định thế nào, anh cũng sẽ luôn biết ơn vì đã có em trong cuộc đời mình.<br><br>
+                Anh sẽ đợi câu trả lời của em, dù là bao lâu.
+            </div>
+            <div class="letter-signature">Mãi yêu em,<br>Người luôn nhớ về em</div>
+            <button class="return-btn" onclick="returnToPassword()">Quay lại mật mã</button>
+        </div>
+        
+        <!-- Thoughts Section -->
+        <div class="thoughts-container" id="thoughtsContainer">
+            <h1 class="thoughts-title">Những Điều Anh Luôn Nghĩ Về Em</h1>
+            <ul class="thoughts-list">
+                <li class="thought-item">
+                    <h3 class="thought-title">Nụ cười của em</h3>
+                    <p class="thought-text">Nụ cười của em là điều đẹp nhất anh từng thấy. Mỗi khi em cười, cả thế giới của anh như bừng sáng.</p>
+                </li>
+                <li class="thought-item">
+                    <h3 class="thought-title">Sự thông minh</h3>
+                    <p class="thought-text">Em luôn khiến anh ngạc nhiên bởi sự thông minh và nhạy bén của mình.</p>
+                </li>
+            </ul>
+            <button class="return-btn" onclick="returnToPassword()">Quay lại mật mã</button>
+        </div>
+
+        <!-- Heart Animation -->
+        <div class="heart-animation" id="heartAnimation"></div>
+    </div>
+
+    <script>
+        let currentSlide = 1;
+        const totalSlides = 2; // Có thể tăng lên 10 nếu thêm slide
+        let yesCount = 0;
+
+        function checkPassword() {
+            const passwordInput = document.getElementById("passwordInput").value.toLowerCase();
+            const passwordScreen = document.getElementById("passwordScreen");
+            const quizContainer = document.getElementById("quizContainer");
+            const letterContainer = document.getElementById("letterContainer");
+            const thoughtsContainer = document.getElementById("thoughtsContainer");
+
+            if (passwordInput === "lili") {
+                passwordScreen.style.display = "none";
+                quizContainer.style.display = "block";
+                updateProgress();
+            } else if (passwordInput === "linhlinh") {
+                passwordScreen.style.display = "none";
+                letterContainer.style.display = "flex";
+            } else if (passwordInput === "thoughts") {
+                passwordScreen.style.display = "none";
+                thoughtsContainer.style.display = "flex";
+            } else {
+                alert("Mật mã không đúng! Thử lại nhé.");
+            }
+        }
+
+        function answerQuestion(answer) {
+            if (answer) {
+                yesCount++;
+                triggerHeartAnimation();
+            }
+            nextSlide();
+        }
+
+        function nextSlide() {
+            document.getElementById(`slide${currentSlide}`).classList.remove("active");
+            currentSlide++;
+            if (currentSlide <= totalSlides) {
+                document.getElementById(`slide${currentSlide}`).classList.add("active");
+                updateProgress();
+            } else {
+                showResult();
+            }
+        }
+
+        function updateProgress() {
+            const progress = document.getElementById(`progress${currentSlide}`);
+            const percentage = ((currentSlide - 1) / totalSlides) * 100;
+            progress.style.width = `${percentage}%`;
+        }
+
+        function showResult() {
+            const resultContainer = document.getElementById("resultContainer");
+            const resultTitle = document.getElementById("resultTitle");
+            const resultMessage = document.getElementById("resultMessage");
+
+            resultContainer.style.display = "flex";
+            for (let i = 1; i <= totalSlides; i++) {
+                document.getElementById(`slide${i}`).style.display = "none";
+            }
+
+            if (yesCount >= Math.ceil(totalSlides * 0.7)) {
+                resultTitle.textContent = "Em vẫn còn nhớ anh, đúng không?";
+                resultMessage.textContent = "Có lẽ trong tim em vẫn còn một chút gì đó dành cho anh.";
+            } else {
+                resultTitle.textContent = "Có lẽ em đã quên anh rồi...";
+                resultMessage.textContent = "Dường như em đã bước tiếp. Anh tôn trọng điều đó.";
+            }
+        }
+
+        function returnToPassword() {
+            document.getElementById("quizContainer").style.display = "none";
+            document.getElementById("letterContainer").style.display = "none";
+            document.getElementById("thoughtsContainer").style.display = "none";
+            document.getElementById("passwordScreen").style.display = "flex";
+            resetQuiz();
+        }
+
+        function restartSlides() {
+            resetQuiz();
+            document.getElementById("resultContainer").style.display = "none";
+            document.getElementById("slide1").classList.add("active");
+            updateProgress();
+        }
+
+        function resetQuiz() {
+            currentSlide = 1;
+            yesCount = 0;
+            document.getElementById("passwordInput").value = "";
+            for (let i = 1; i <= totalSlides; i++) {
+                document.getElementById(`slide${i}`).style.display = i === 1 ? "flex" : "none";
+                document.getElementById(`slide${i}`).classList.remove("active");
+            }
+            document.getElementById("slide1").classList.add("active");
+        }
+
+        function triggerHeartAnimation() {
+            const heartAnimation = document.getElementById("heartAnimation");
+            heartAnimation.style.display = "block";
+            for (let i = 0; i < 10; i++) {
+                const heart = document.createElement("div");
+                heart.className = "heart";
+                heart.style.left = `${Math.random() * 100}%`;
+                heart.style.top = `${Math.random() * 100}%`;
+                heart.style.setProperty("--translate-x", `${(Math.random() - 0.5) * 200}px`);
+                heart.style.setProperty("--translate-y", `${(Math.random() - 0.5) * 200}px`);
+                heartAnimation.appendChild(heart);
+                setTimeout(() => heart.remove(), 3000);
+            }
+            setTimeout(() => heartAnimation.style.display = "none", 3000);
+        }
+
+        document.getElementById("passwordInput").addEventListener("keypress", function(event) {
+            if (event.key === "Enter") {
+                checkPassword();
+            }
+        });
+    </script>
+</body>
+</html>
